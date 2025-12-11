@@ -1,5 +1,5 @@
 from fastapi import FastAPI, Depends, HTTPException
-from database import engine, SessionMaker
+from database import SessionMaker
 from models import Task, Image
 from typing import Annotated
 from sqlalchemy.orm import Session
@@ -9,8 +9,8 @@ from starlette.responses import StreamingResponse
 app = FastAPI()
 
 def get_session():
-    Session = SessionMaker()
     try:
+        Session = SessionMaker()
         yield Session
     finally:
         Session.close()

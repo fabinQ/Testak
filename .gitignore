@@ -1,3 +1,6 @@
 backend/data/
 .venv/
 .env
+backend/__pycache__/
+backend/__pycache__/main.cpython-314.pyc
+backend/__pycache__/models.cpython-314.pyc
