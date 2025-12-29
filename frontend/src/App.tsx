@@ -3,10 +3,11 @@ import type { Task } from './types'
 
 function App() {
   const [tasks, setTasks] = useState<Task[]>([])
-
+  const [serverUrl, setServerUrl] = useState('http://127.0.0.1:8000/tasks/')
+  
   // Pobieranie danych z API
   useEffect(() => {
-    fetch('http://127.0.0.1:8000/tasks/')
+    fetch(serverUrl)
       .then(res => res.json())
       .then(data => setTasks(data))
       .catch(err => console.error("Błąd połączenia z API:", err))
