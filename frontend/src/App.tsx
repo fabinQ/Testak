@@ -4,6 +4,7 @@ import { RandomUseStade, PersonInfo } from "./PersonalInfo.tsx";
 import { Formularz } from "./Form.tsx";
 
 function App() {
+<<<<<<< HEAD
   const [tasks, setTasks] = useState<Task[]>([]);
   const [filters, setFilters] = useState({
     class_level: "all",
@@ -24,6 +25,18 @@ function App() {
       .then((data) => setTasks(data))
       .catch((err) => console.error("Błąd połączenia z API:", err));
   }, []);
+=======
+  const [tasks, setTasks] = useState<Task[]>([])
+  const [serverUrl, setServerUrl] = useState('http://127.0.0.1:8000/tasks/')
+  
+  // Pobieranie danych z API
+  useEffect(() => {
+    fetch(serverUrl)
+      .then(res => res.json())
+      .then(data => setTasks(data))
+      .catch(err => console.error("Błąd połączenia z API:", err))
+  }, [])
+>>>>>>> 2915dca8ec400fad2277f2d07d7a4cc03925dd02
 
   return (
     <>
