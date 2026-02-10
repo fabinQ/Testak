@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-const people = [
+export const initialPeople = [
   { firstName: "John", tel: "123-456-7890", city: "New York" },
   { firstName: "Jane", tel: "987-654-3210", city: "Los Angeles" },
   { firstName: "Alice", tel: "555-123-4567", city: "Chicago" },
@@ -8,7 +8,9 @@ const people = [
 
 const Tel = ({ tel }: { tel: string }) => <a href={`tel:${tel}`}>Tel {tel}</a>;
 
-const PersonData = (props: {
+const PersonData = ({
+  person,
+}: {
   person: { firstName: string; tel: string; city: string };
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
@@ -20,14 +22,14 @@ const PersonData = (props: {
   );
   return (
     <>
-      <h2>{props.person.firstName}</h2>
+      <h2>{person.firstName}</h2>
       {buttonElement}
       {isExpanded && (
         <>
           <h3>
-            <Tel tel={props.person.tel}></Tel>
+            <Tel tel={person.tel}></Tel>
           </h3>
-          {props.person.city && <h3>Miasto: {props.person.city}</h3>}
+          {person.city && <h3>Miasto: {person.city}</h3>}
         </>
       )}
     </>
@@ -47,11 +49,17 @@ export const RandomUseStade = () => {
   return <>{buttonElement}</>;
 };
 
-export const PersonInfo = (
-  <>
-    <h1>Lista Kontaktów</h1>
-    {people.map((person) => (
-      <PersonData key={person.tel} person={person} />
-    ))}
-  </>
-);
+export function PersonInfo({
+  people
+}: {
+  people: { firstName: string; tel: string; city: string }[];
+}) {
+  return (
+    <>
+      <h1>Lista Kontaktów</h1>
+      {people.map((p) => (
+        <PersonData key={p.tel} person={p} />
+      ))}
+    </>
+  );
+}

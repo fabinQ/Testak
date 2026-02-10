@@ -1,10 +1,13 @@
 import { useEffect, useState } from "react";
 import type { Task } from "./types";
-import { RandomUseStade, PersonInfo } from "./PersonalInfo.tsx";
+import { RandomUseStade, PersonInfo, initialPeople } from "./PersonalInfo.tsx";
 import { Formularz } from "./Form.tsx";
 
 function App() {
-<<<<<<< HEAD
+  const [people, setPeople] = useState(initialPeople);
+  const handleAddPerson = ({ name, tel, city }: { name: string; tel: string; city: string }) =>
+    setPeople((prev) => [...prev, { firstName: name, tel: tel, city:city }]);
+
   const [tasks, setTasks] = useState<Task[]>([]);
   const [filters, setFilters] = useState({
     class_level: "all",
@@ -25,26 +28,14 @@ function App() {
       .then((data) => setTasks(data))
       .catch((err) => console.error("Błąd połączenia z API:", err));
   }, []);
-=======
-  const [tasks, setTasks] = useState<Task[]>([])
-  const [serverUrl, setServerUrl] = useState('http://127.0.0.1:8000/tasks/')
-  
-  // Pobieranie danych z API
-  useEffect(() => {
-    fetch(serverUrl)
-      .then(res => res.json())
-      .then(data => setTasks(data))
-      .catch(err => console.error("Błąd połączenia z API:", err))
-  }, [])
->>>>>>> 2915dca8ec400fad2277f2d07d7a4cc03925dd02
 
   return (
     <>
-      <Formularz />
+      <Formularz onAddPerson={handleAddPerson}/>
       <div>
         <RandomUseStade />
       </div>
-      <div className="w-full p-4 bg-white shadow-md mb-6">{PersonInfo}</div>
+      <div className="w-full p-4 bg-white shadow-md mb-6"><PersonInfo people={people} /></div>
       <div className="min-h-screen bg-gray-100 flex p-6 gap-6">
         {/* LEWA STRONA: LISTA ZADAŃ */}
         <div className="w-1/3 bg-white shadow-lg rounded-xl p-4 overflow-y-auto max-h-[90vh]">

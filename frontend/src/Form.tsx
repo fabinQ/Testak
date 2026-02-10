@@ -1,11 +1,9 @@
 import { useEffect, useState } from "react";
 
 
-const addPerson = () => { 
-    console.log("Dodano nową osobę");
-  }
-  
-const Form = (props:{onAddPerson: () => void}) => {
+const Form = (props: {
+  onAddPerson: (person: { name: string; tel: string; city: string }) => void;
+}) => {
   const [name, setName] = useState("");
   const [tel, setTel] = useState("");
   const [city, setCity] = useState("");
@@ -13,8 +11,7 @@ const Form = (props:{onAddPerson: () => void}) => {
     <form
       onSubmit={(e) => {
         e.preventDefault();
-        console.log({ name, tel, city });
-        props.onAddPerson();
+        props.onAddPerson({ name, tel, city });
       }}
     >
       <div>
@@ -57,14 +54,18 @@ const Form = (props:{onAddPerson: () => void}) => {
   );
 };
 
-export function Formularz() {
+export function Formularz({
+  onAddPerson,
+}: {
+  onAddPerson: (person: { name: string; tel: string; city: string }) => void;
+}) {
   const [isFormShown, setIsFromShown] = useState(false);
   return (
     <>
       <button onClick={() => setIsFromShown(!isFormShown)}>
         {isFormShown ? "Ukryj formularz" : "Pokaż formularz"}
       </button>
-      {isFormShown && <Form onAddPerson={addPerson}/>}
+      {isFormShown && <Form onAddPerson={onAddPerson} />}
     </>
   );
 }
