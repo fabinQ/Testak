@@ -5,9 +5,27 @@ import { Formularz } from "./Form.tsx";
 
 function App() {
   const [people, setPeople] = useState(initialPeople);
-  const handleAddPerson = ({ name, tel, city }: { name: string; tel: string; city: string }) =>
-    setPeople((prev) => [...prev, { firstName: name, tel: tel, city:city }]);
+  const handleAddPerson = ({
+    name,
+    tel,
+    city,
+  }: {
+    name: string;
+    tel: string;
+    city: string;
+  }) =>
+    setPeople((prev) => [...prev, { firstName: name, tel: tel, city: city }]);
 
+  const handleDelete = (telToRemove: string): void => {
+    setPeople((prev) => prev.filter((p) => p.tel !== telToRemove));
+  };
+  const handleEdit = (telToEdit: string, newName: string, newCity: string) => {
+    setPeople((prev) =>
+      prev.map((p) =>
+        p.tel === telToEdit ? { ...p, firstName: newName, city: newCity } : p,
+      ),
+    );
+  };
   const [tasks, setTasks] = useState<Task[]>([]);
   const [filters, setFilters] = useState({
     class_level: "all",
@@ -31,11 +49,17 @@ function App() {
 
   return (
     <>
-      <Formularz onAddPerson={handleAddPerson}/>
+      <Formularz onAddPerson={handleAddPerson} />
       <div>
         <RandomUseStade />
       </div>
-      <div className="w-full p-4 bg-white shadow-md mb-6"><PersonInfo people={people} /></div>
+      <div className="w-full p-4 bg-white shadow-md mb-6">
+        <PersonInfo
+          people={people}
+          onDelete={handleDelete}
+          onEdit={handleEdit}
+        />
+      </div>
       <div className="min-h-screen bg-gray-100 flex p-6 gap-6">
         {/* LEWA STRONA: LISTA ZADAŃ */}
         <div className="w-1/3 bg-white shadow-lg rounded-xl p-4 overflow-y-auto max-h-[90vh]">

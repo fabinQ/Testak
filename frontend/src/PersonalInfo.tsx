@@ -10,15 +10,37 @@ const Tel = ({ tel }: { tel: string }) => <a href={`tel:${tel}`}>Tel {tel}</a>;
 
 const PersonData = ({
   person,
+  onDelete,
+  onEdit,
 }: {
   person: { firstName: string; tel: string; city: string };
+  onDelete?: (tel: string) => void;
+  onEdit?: (tel: string, newName: string, newCity: string) => void;
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
   const buttonElement = (
-    <button onClick={() => setIsExpanded(!isExpanded)}>
-      {isExpanded ? "Ukryj" : "Pokaż"}
-    </button>
+    <>
+      <button onClick={() => setIsExpanded(!isExpanded)}>
+        {isExpanded ? "Ukryj" : "Pokaż"}
+      </button>
+      {isExpanded && (
+        <button
+          onClick={() => {
+            if (onDelete) {
+              if (window.confirm(`Usunąć ${person.firstName}?`)) {
+                onDelete(person.tel);
+              }
+            } else {
+              window.alert(`Usuwasz ${person.firstName}`);
+            }
+          }}
+        >
+          Usuń
+        </button>
+      )}
+      {isExpanded && <button onClick={() => {}}>Edytuj</button>}
+    </>
   );
   return (
     <>
@@ -50,15 +72,19 @@ export const RandomUseStade = () => {
 };
 
 export function PersonInfo({
-  people
+  people,
+  onDelete,
+  onEdit,
 }: {
   people: { firstName: string; tel: string; city: string }[];
+  onDelete?: (tel: string) => void;
+  onEdit?: (tel: string, newName: string, newCity: string) => void;
 }) {
   return (
     <>
       <h1>Lista Kontaktów</h1>
       {people.map((p) => (
-        <PersonData key={p.tel} person={p} />
+        <PersonData key={p.tel} person={p} onDelete={onDelete} />
       ))}
     </>
   );
