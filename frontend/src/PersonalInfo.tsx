@@ -18,6 +18,10 @@ const PersonData = ({
   onEdit?: (tel: string, newName: string, newCity: string) => void;
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editName, setEditName] = useState(person.firstName);
+  const [editTel, setEditTel] = useState(person.tel);
+  const [editCity, setEditCity] = useState(person.city);
 
   const buttonElement = (
     <>
@@ -39,7 +43,22 @@ const PersonData = ({
           Usuń
         </button>
       )}
-      {isExpanded && <button onClick={() => {}}>Edytuj</button>}
+      {isExpanded && (
+        <button
+          onClick={() => {
+            if (isEditing) {
+              if (onEdit) {
+                onEdit(editTel, editName, editCity);
+              }
+              setIsEditing(false);
+            } else {
+              setIsEditing(true);
+            }
+          }}
+        >
+          {isEditing ? "Wyślij" : "Edytuj"}
+        </button>
+      )}
     </>
   );
   return (
@@ -84,7 +103,12 @@ export function PersonInfo({
     <>
       <h1>Lista Kontaktów</h1>
       {people.map((p) => (
-        <PersonData key={p.tel} person={p} onDelete={onDelete} />
+        <PersonData
+          key={p.tel}
+          person={p}
+          onDelete={onDelete}
+          onEdit={onEdit}
+        />
       ))}
     </>
   );
