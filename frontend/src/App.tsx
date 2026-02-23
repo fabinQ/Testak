@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import type { Task } from "./types";
-import { RandomUseStade, PersonInfo, initialPeople } from "./PersonalInfo.tsx";
+import { PersonInfo, initialPeople } from "./PersonalInfo.tsx";
 import { Formularz } from "./Form.tsx";
 
 function App() {
@@ -50,10 +50,7 @@ function App() {
   return (
     <>
       <Formularz onAddPerson={handleAddPerson} />
-      <div>
-        <RandomUseStade />
-      </div>
-      <div className="w-full p-4 bg-white shadow-md mb-6">
+       <div className="w-full p-4 bg-white shadow-md mb-6">
         <PersonInfo
           people={people}
           onDelete={handleDelete}

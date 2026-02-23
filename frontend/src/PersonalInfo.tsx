@@ -63,32 +63,39 @@ const PersonData = ({
   );
   return (
     <>
+    {isEditing?
+    (
+      <>
+        <h2><input value={editName} onChange={(e) => setEditName(e.target.value)} /></h2>
+        {buttonElement}
+        {isExpanded && (
+          <>
+            <h3>
+              <input value={editTel} onChange={(e) => setEditTel(e.target.value)} />
+            </h3>
+            {person.city && <h3>Miasto: <input value={editCity} onChange={(e) => setEditCity(e.target.value)} /></h3>}
+          </>
+        )}        
+      </>
+    ):(
+      <>
       <h2>{person.firstName}</h2>
-      {buttonElement}
-      {isExpanded && (
-        <>
-          <h3>
-            <Tel tel={person.tel}></Tel>
-          </h3>
-          {person.city && <h3>Miasto: {person.city}</h3>}
-        </>
-      )}
+        {buttonElement}
+        {isExpanded && (
+          <>
+            <h3>
+              <Tel tel={person.tel}></Tel>
+            </h3>
+            {person.city && <h3>Miasto: {person.city}</h3>}
+          </>
+        )}
+      </>
+    )}
     </>
-  );
-};
+    )
+}
 
-// let counter = 0;
-export const RandomUseStade = () => {
-  //   counter++;
-  const random = Math.floor(Math.random() * 100);
-  //   console.log(`Random ${counter}:`, random);
-  const [current, setCurrent] = useState(random);
-  //   console.log(`Current ${counter}:`, current);
-  const buttonElement = (
-    <button onClick={() => setCurrent(random)}>{current}</button>
-  );
-  return <>{buttonElement}</>;
-};
+
 
 export function PersonInfo({
   people,
