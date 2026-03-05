@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import type { Task } from "./types";
 import { PersonInfo, initialPeople } from "./PersonalInfo.tsx";
 import { Formularz } from "./Form.tsx";
+import "./App.css";
 
 function App() {
   const [people, setPeople] = useState(initialPeople);
@@ -50,12 +51,14 @@ function App() {
   return (
     <>
       <Formularz onAddPerson={handleAddPerson} />
-       <div className="w-full p-4 bg-white shadow-md mb-6">
-        <PersonInfo
-          people={people}
-          onDelete={handleDelete}
-          onEdit={handleEdit}
-        />
+      <div className="w-full p-4 bg-white shadow-md mb-6">
+        <ul>
+          <PersonInfo
+            people={people}
+            onDelete={handleDelete}
+            onEdit={handleEdit}
+          />
+        </ul>
       </div>
       <div className="min-h-screen bg-gray-100 flex p-6 gap-6">
         {/* LEWA STRONA: LISTA ZADAŃ */}

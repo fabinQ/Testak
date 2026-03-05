@@ -1,4 +1,5 @@
 import { useState } from "react";
+import "./PersonalInfo.css"
 
 export const initialPeople = [
   { firstName: "John", tel: "123-456-7890", city: "New York" },
@@ -29,6 +30,7 @@ const PersonData = ({
         {isExpanded ? "Ukryj" : "Pokaż"}
       </button>
       {isExpanded && (
+        <>
         <button
           onClick={() => {
             if (onDelete) {
@@ -42,8 +44,6 @@ const PersonData = ({
         >
           Usuń
         </button>
-      )}
-      {isExpanded && (
         <button
           onClick={() => {
             if (isEditing) {
@@ -58,11 +58,12 @@ const PersonData = ({
         >
           {isEditing ? "Wyślij" : "Edytuj"}
         </button>
+      </>
       )}
     </>
   );
   return (
-    <>
+    <li>
     {isEditing?
     (
       <>
@@ -71,7 +72,7 @@ const PersonData = ({
         {isExpanded && (
           <>
             <h3>
-              <input value={editTel} onChange={(e) => setEditTel(e.target.value)} />
+              {person.tel}
             </h3>
             {person.city && <h3>Miasto: <input value={editCity} onChange={(e) => setEditCity(e.target.value)} /></h3>}
           </>
@@ -91,7 +92,7 @@ const PersonData = ({
         )}
       </>
     )}
-    </>
+    </li>
     )
 }
 
