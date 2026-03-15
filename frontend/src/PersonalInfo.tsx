@@ -21,7 +21,7 @@ const PersonData = ({
   const [isExpanded, setIsExpanded] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [editName, setEditName] = useState(person.firstName);
-  const [editTel, setEditTel] = useState(person.tel);
+  const editTel =person.tel;
   const [editCity, setEditCity] = useState(person.city);
 
   const buttonElement = (
@@ -63,7 +63,7 @@ const PersonData = ({
     </>
   );
   return (
-    <li>
+    <li className = {isExpanded ? "active":""}>
     {isEditing?
     (
       <>

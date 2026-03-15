@@ -28,17 +28,18 @@ function App() {
     );
   };
   const [tasks, setTasks] = useState<Task[]>([]);
-  const [filters, setFilters] = useState({
-    class_level: "all",
-    topic: "all",
-    difficulty: "all",
-    date_created: "all",
-    task_type: "all",
-    scope: "all",
-    points: "all",
-    source: "all",
-  });
-  const [serverUrl, setServerUrl] = useState("http://127.0.0.1:8000/tasks/");
+  // const [filters, setFilters] = useState({
+  //   class_level: "all",
+  //   topic: "all",
+  //   difficulty: "all",
+  //   date_created: "all",
+  //   task_type: "all",
+  //   scope: "all",
+  //   points: "all",
+  //   source: "all",
+  // });
+  // const [serverUrl, setServerUrl] = useState("http://127.0.0.1:8000/tasks/");
+  const serverUrl = "http://127.0.0.1:8000/tasks/";
 
   // Pobieranie danych z API
   useEffect(() => {
