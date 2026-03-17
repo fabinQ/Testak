@@ -1,15 +1,22 @@
 import { useEffect, useState } from 'react'
-import type { Task } from './types'
+import type { Task, Answer } from './types'
+import {Path } from './types'
 
 function App() {
   const [tasks, setTasks] = useState<Task[]>([])
-  const [serverUrl, setServerUrl] = useState('http://127.0.0.1:8000/tasks/')
-  
+  const [answers, setAnswers] = useState<Answer[]>([]);
+
   // Pobieranie danych z API
   useEffect(() => {
-    fetch(serverUrl)
+    fetch(Path.task)
       .then(res => res.json())
       .then(data => setTasks(data))
+      .catch(err => console.error("Błąd połączenia z API:", err))
+  }, [])
+  useEffect(() => {
+    fetch(Path.answers)
+      .then(res => res.json())
+      .then(data => setAnswers(data))
       .catch(err => console.error("Błąd połączenia z API:", err))
   }, [])
 
@@ -47,7 +54,7 @@ function App() {
 // FUNKCJA NAPRAWIAJĄCA OBRAZKI
 function rewriteImageUrls(html: string) {
   // Zamieniamy image://2647.svg na http://127.0.0.1:8000/images/2647.svg
-  return html.replace(/image:\/\//g, 'http://127.0.0.1:8000/images/');
+  return html.replace(/image:\/\//g, Path.images);
 }
 
 export default App
