@@ -13,7 +13,7 @@ class Task(Base):
 
     # Definicja kolumn tabeli
     id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True, autoincrement=True)
-    # external_id: Mapped[str] = mapped_column(Integer)
+    external_id: Mapped[str] = mapped_column(Integer)
     subject: Mapped[str] = mapped_column(String(50), index=True)
     class_level: Mapped[int] = mapped_column(Integer, index=True)
     difficulty: Mapped[str] = mapped_column(String(50), index=True)
@@ -42,3 +42,15 @@ class Image(Base):
     file_data: Mapped[bytes] = mapped_column(LargeBinary)
     mime_type: Mapped[str] = mapped_column(String, index=True)
     file_size: Mapped[int] = mapped_column(Integer)
+
+class Answers(Base):
+
+    __tablename__="answers"
+
+    id: Mapped[int] = mapped_column (Integer, primary_key= True, index=True, autoincrement= True)
+    task_id: Mapped[int] = mapped_column(Integer)
+    answer_label:Mapped[int] =  mapped_column(String(1))
+    contect_html:Mapped[str] = mapped_column(String)
+    contect_text:Mapped[str] = mapped_column(String)
+    is_valid:Mapped[int] = mapped_column(Integer)
+    display_order:Mapped[int] = mapped_column(Integer)
