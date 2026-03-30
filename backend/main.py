@@ -1,3 +1,4 @@
+from typing import Annotated, Optional
 from fastapi import FastAPI, Depends, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from database import SessionMaker
@@ -30,9 +31,29 @@ def get_session():
         Session.close()
 
 @app.get("/tasks/")
-def read_tasks( db: Annotated[Session, Depends(get_session)]):
-    tasks = db.query(Task).limit(50).all()
-    return tasks
+def read_tasks( 
+    db: Annotated[Session, Depends(get_session)],
+    class_level: Optional[int] = None,
+    difficulty: Optional[str] = None,
+    task_type: Optional[str] = None,
+    scope: Optional[str] = None,
+    topic: Optional[str] = None
+    ):
+
+    query = db.query(Task)
+
+    if class_level is not None:
+        query = query.filter(Task.class_level == class_level)
+    if difficulty is not None:
+        query = query.filter(Task.difficulty == difficulty)
+    if task_type is not None:
+        query = query.filter(Task.task_type == task_type)
+    if scope is not None:
+        query = query.filter(Task.scope == scope)
+    if topic is not None:
+        query = query.filter(Task.topic == topic)
+
+    return query.all()
 
 @app.get("/images/{filename}")
 def get_images( db: Annotated[Session, Depends(get_session)], filename: str):
