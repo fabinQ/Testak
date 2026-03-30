@@ -48,9 +48,9 @@ def get_images( db: Annotated[Session, Depends(get_session)], filename: str):
     
     return StreamingResponse(content=iter([image.file_data]),media_type=image.mime_type)
 
-@app.get("/answers/{id}")
-def get_answers (db:Annotated[Session, Depends(get_session)], id: int):
-    answers = db.query(Answers).filter(Answers.task_id == id).all()
+@app.get("/answers/{id_answers}")
+def get_answers (db:Annotated[Session, Depends(get_session)], id_answers: int):
+    answers = db.query(Answers).filter(Answers.task_id == id_answers).all()
     if not answers:
         raise HTTPException(status_code=404, detail="No answer to the question.")
-    
+    return answers
