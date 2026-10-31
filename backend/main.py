@@ -2,7 +2,7 @@ from typing import Annotated, Optional
 from fastapi import FastAPI, Depends, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from database import SessionMaker
-from models import Task, Image, Answers
+from models import Task, Image, Answer
 from typing import Annotated
 from sqlalchemy.orm import Session
 from starlette.responses import StreamingResponse
@@ -24,11 +24,11 @@ app.add_middleware(
 )
 
 def get_session():
+    db = SessionMaker()
     try:
-        Session = SessionMaker()
-        yield Session
+        yield db
     finally:
-        Session.close()
+        db.close()
 
 @app.get("/tasks/")
 def read_tasks( 
@@ -71,7 +71,7 @@ def get_images( db: Annotated[Session, Depends(get_session)], filename: str):
 
 @app.get("/answers/{id_answers}")
 def get_answers (db:Annotated[Session, Depends(get_session)], id_answers: int):
-    answers = db.query(Answers).filter(Answers.task_id == id_answers).all()
+    answers = db.query(Answer).filter(Answer.task_id == id_answers).all()
     if not answers:
         raise HTTPException(status_code=404, detail="No answer to the question.")
     return answers

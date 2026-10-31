@@ -1,56 +1,74 @@
-from sqlalchemy.orm import DeclarativeBase
-from sqlalchemy.orm import mapped_column, Mapped
-from sqlalchemy import Integer, String, Boolean, Text, LargeBinary
+from sqlalchemy import Boolean, ForeignKey, Integer, LargeBinary, String, Text
+from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 
-# Klasa bazowa dla modeli SQLAlchemy
+
+# Klasa bazowa dla modeli SQLAlchemy (jedna dla banku i przyszłych tabel własnych)
 class Base(DeclarativeBase):
     pass
 
-class Task(Base):
 
-    # Nazwa tabeli w bazie danych
+# Tabele banku (tasks, answers, images, task_images) są TYLKO DO ODCZYTU.
+# Schemat odzwierciedla realną bazę (PRD 5.2) — nie uruchamiać na nich create_all.
+
+
+class Task(Base):
     __tablename__ = "tasks"
 
-    # Definicja kolumn tabeli
-    id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True, autoincrement=True)
-    external_id: Mapped[str] = mapped_column(Integer)
-    subject: Mapped[str] = mapped_column(String(50), index=True)
-    class_level: Mapped[int] = mapped_column(Integer, index=True)
-    difficulty: Mapped[str] = mapped_column(String(50), index=True)
-    task_type: Mapped[str] = mapped_column(String(50), index=True)
-    scope: Mapped[str] = mapped_column(String, index=True)
-    topic: Mapped[str] = mapped_column(String(150), index=True)
-    points: Mapped[int] = mapped_column(Integer)
-    time_minutes: Mapped[int] = mapped_column(Integer)
-    source: Mapped[str] = mapped_column(String, index=True)
-    twin_task_id: Mapped[int | None] = mapped_column(Integer, nullable=True, index=True, autoincrement=True)
-    created_at: Mapped[str] = mapped_column(String, index=True)
-    
-    # Treść zadania w formacie tekstowym i HTML
-    content_text: Mapped[str] = mapped_column(Text)
-    content_html: Mapped[str] = mapped_column(Text)
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    external_id: Mapped[int] = mapped_column(Integer, nullable=False, index=True)
+    date_created: Mapped[str | None] = mapped_column(Text)
+    subject: Mapped[str] = mapped_column(Text, nullable=False)
+    class_level: Mapped[int | None] = mapped_column(Integer, index=True)
+    difficulty: Mapped[str | None] = mapped_column(Text)
+    task_type: Mapped[str] = mapped_column(Text, nullable=False, index=True)
+    scope: Mapped[str | None] = mapped_column(Text)
+    topic: Mapped[str | None] = mapped_column(Text)
+    points: Mapped[int | None] = mapped_column(Integer)
+    time_minutes: Mapped[int | None] = mapped_column(Integer)
+    source: Mapped[str | None] = mapped_column(Text)
+    content_html: Mapped[str] = mapped_column(Text, nullable=False)
+    content_text: Mapped[str | None] = mapped_column(Text)
+    twin_task_id: Mapped[int | None] = mapped_column(ForeignKey("tasks.id"))
+    created_at: Mapped[str] = mapped_column(Text, nullable=False)
+    updated_at: Mapped[str] = mapped_column(Text, nullable=False)
+
+    answers: Mapped[list["Answer"]] = relationship(
+        back_populates="task", order_by="Answer.display_order"
+    )
+    task_images: Mapped[list["TaskImage"]] = relationship(back_populates="task")
+
+
+class Answer(Base):
+    __tablename__ = "answers"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    task_id: Mapped[int] = mapped_column(ForeignKey("tasks.id"), nullable=False, index=True)
+    answer_label: Mapped[str | None] = mapped_column(Text)
+    content_html: Mapped[str] = mapped_column(Text, nullable=False)
+    content_text: Mapped[str | None] = mapped_column(Text)
+    is_valid: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
+    display_order: Mapped[int] = mapped_column(Integer, nullable=False)
+
+    task: Mapped["Task"] = relationship(back_populates="answers")
+
 
 class Image(Base):
-
-    # Nazwa tabeli w bazie danych
     __tablename__ = "images"
 
-    # Definicja kolumn tabeli
-    id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True, autoincrement=True)
-    filename: Mapped[str] = mapped_column(String, index=True)
-    
-    file_data: Mapped[bytes] = mapped_column(LargeBinary)
-    mime_type: Mapped[str] = mapped_column(String, index=True)
-    file_size: Mapped[int] = mapped_column(Integer)
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    filename: Mapped[str] = mapped_column(Text, unique=True, nullable=False, index=True)
+    file_data: Mapped[bytes] = mapped_column(LargeBinary, nullable=False)
+    mime_type: Mapped[str] = mapped_column(Text, nullable=False)
+    file_size: Mapped[int] = mapped_column(Integer, nullable=False)
+    created_at: Mapped[str] = mapped_column(Text, nullable=False)
 
-class Answers(Base):
 
-    __tablename__="answers"
+class TaskImage(Base):
+    __tablename__ = "task_images"
 
-    id: Mapped[int] = mapped_column (Integer, primary_key= True, index=True, autoincrement= True)
-    task_id: Mapped[int] = mapped_column(Integer)
-    answer_label:Mapped[int] =  mapped_column(String(1))
-    content_html:Mapped[str] = mapped_column(String)
-    content_text:Mapped[str] = mapped_column(String)
-    is_valid:Mapped[int] = mapped_column(Integer)
-    display_order:Mapped[int] = mapped_column(Integer)
+    task_id: Mapped[int] = mapped_column(ForeignKey("tasks.id"), primary_key=True)
+    image_id: Mapped[int] = mapped_column(ForeignKey("images.id"), primary_key=True)
+    context: Mapped[str] = mapped_column(Text, primary_key=True)
+
+    task: Mapped["Task"] = relationship(back_populates="task_images")
+    image: Mapped["Image"] = relationship()

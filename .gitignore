@@ -6,3 +6,11 @@ backend/__pycache__/main.cpython-314.pyc
 backend/__pycache__/models.cpython-314.pyc
 Testak.json
 rodzaje danych w tabeli tasks.txt
+
+# bank (jedyna kopia, poza git)
+backend/tasks.db
+backend/*.db
+frontend/.env
+
+backend/.pytest_cache/
+backend/tests/__pycache__/

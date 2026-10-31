@@ -21,7 +21,8 @@ export interface Answer {
   content_txt: string;
   is_valid: boolean;
 }
-const SERVER_IP = 'http://127.0.0.1:8000/';
+// Adres API z frontend/.env (VITE_API_URL), bez końcowego slasha
+const SERVER_IP = (import.meta.env.VITE_API_URL as string).replace(/\/$/, '') + '/';
 
 export const Path = {
   task: SERVER_IP + 'tasks/',

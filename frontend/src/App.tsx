@@ -1,19 +1,19 @@
 import { useEffect, useState } from "react";
-import type { Task, Answer } from "./types";
+import type { Task } from "./types";
 import { Path } from "./types";
 
 function App() {
   const [tasks, setTasks] = useState<Task[]>([]);
-  const [answers, setAnswers] = useState<Answer[]>([]);
 
   //Klucze do fitrowania
-  const [classLevel, setClassLevel] = useState<string>("");
-  const [difficulty, setDifficulty] = useState<string>("");
-  const [taskType, setTaskType] = useState<string>("");
-  const [scope, setScope] = useState<string>("");
-  const [topic, setTopic] = useState<string>("");
+  // Settery dojdą razem z UI filtrów w Fazie 1 (noUnusedLocals)
+  const [classLevel] = useState<string>("");
+  const [difficulty] = useState<string>("");
+  const [taskType] = useState<string>("");
+  const [scope] = useState<string>("");
+  const [topic] = useState<string>("");
 
-  // Dynamiczne tworzenie zapytań
+  // Pobieranie zadań z API z aktualnymi filtrami
   useEffect(() => {
     const params = new URLSearchParams();
 
@@ -23,22 +23,11 @@ function App() {
     if (scope) params.append("scope", scope);
     if (topic) params.append("topic", topic);
 
-    const url = `${Path.task}?${params.toString()}`;
-  });
-
-  // Pobieranie danych z API
-  useEffect(() => {
-    fetch(Path.task)
+    fetch(`${Path.task}?${params.toString()}`)
       .then((res) => res.json())
       .then((data) => setTasks(data))
       .catch((err) => console.error("Błąd połączenia z API:", err));
-  }, [difficulty, taskType, scope, topic]);
-  useEffect(() => {
-    fetch(Path.answers)
-      .then((res) => res.json())
-      .then((data) => setAnswers(data))
-      .catch((err) => console.error("Błąd połączenia z API:", err));
-  }, []);
+  }, [classLevel, difficulty, taskType, scope, topic]);
 
   return (
     <div className="min-h-screen bg-gray-100 flex p-6 gap-6">
@@ -59,7 +48,7 @@ function App() {
               </div>
               {/* Tutaj wyświetlimy treść HTML */}
               <div
-                className="prose prose-sm max-w-none text-slate-700"
+                className="task-content"
                 dangerouslySetInnerHTML={{
                   __html: rewriteImageUrls(task.content_html),
                 }}
@@ -84,7 +73,7 @@ function App() {
 
 // FUNKCJA NAPRAWIAJĄCA OBRAZKI
 function rewriteImageUrls(html: string) {
-  // Zamieniamy image://2647.svg na http://127.0.0.1:8000/images/2647.svg
+  // Zamieniamy image://2647.svg na <VITE_API_URL>/images/2647.svg
   return html.replace(/image:\/\//g, Path.images);
 }
 
