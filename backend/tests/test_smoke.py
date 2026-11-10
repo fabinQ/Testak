@@ -16,7 +16,7 @@ def test_db_path_is_absolute_and_exists():
 def test_tasks_endpoint_returns_rows():
     res = client.get("/tasks/", params={"class_level": 4})
     assert res.status_code == 200
-    rows = res.json()
+    rows = res.json()["items"]
     assert rows and all(r["class_level"] == 4 for r in rows)
 
 

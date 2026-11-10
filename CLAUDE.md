@@ -30,6 +30,7 @@ Talk to me in Polish. Code identifiers, commits, this file: English. UI strings 
 
 ## Decisions
 - **Twin tasks** (rows referenced by another row's `twin_task_id`) are never in the draw pool. With `group_count=2` they become group B content. GATE: before any twin/draw work, run a query checking whether `twin_task_id` is symmetric (A->B and B->A), report the result, and if symmetric ask me which side is the "original".
+- **Twin original (GATE resolved 2026-11-10):** `twin_task_id` is fully symmetric (2191 pairs). The lower `id` is the original; the higher-`id` side is hidden from `GET /tasks`, facets and draws (`is_original()` in `backend/main.py`) and activates only as group B content.
 - **Blank difficulty/scope** (NULL or "") matches every filter (FR-7/7a) — in draws, `GET /tasks` and facet counts. So count(łatwe) = łatwe + blank; counts don't sum to total (by design).
 - **Facets** take `class_level`; topic list is per class.
 - **Search (FR-2):** SQLite LIKE/lower() are ASCII-only. Register a Python casefold function on the engine `connect` event (`create_function`), compare against the casefolded query, escape `%` `_`. Check it stays <300 ms.

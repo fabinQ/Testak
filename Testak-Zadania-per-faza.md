@@ -4,25 +4,25 @@ Plan wykonawczy do PRD v1.1 (zasady pracy agenta: `CLAUDE.md`). Każde zadanie t
 
 ## Faza 0 — Porządki
 
-- [ ] Kopia `backend/tasks.db` poza repo (baza jest w `.gitignore` — to jedyna kopia banku)
-- [ ] `database.py`: absolutna ścieżka do bazy (`Path(__file__)`) zamiast `./tasks.db`
-- [ ] `requirements.txt`: dopisz `pytest`, `httpx`, `alembic`
-- [ ] Usuń z katalogu głównego `package.json`, `package-lock.json` i `node_modules` (zaślepka po `npm install node.js`)
-- [ ] Dodaj `VITE_API_URL` do `frontend/.env` i `frontend/.env.example`
-- [ ] Zamień sztywne `http://127.0.0.1:8000` w `App.tsx` na `import.meta.env.VITE_API_URL`
-- [ ] Popraw `get_session`: `db = SessionMaker()` przed `try`, zmień nazwę zmiennej `Session` → `db` (cieniuje import)
-- [ ] Usuń `autoincrement=True` z `twin_task_id` w `models.py`
-- [ ] Dodaj do `Task` w `models.py`: `external_id` (z `index=True` — w realnej bazie ma indeks `idx_tasks_external_id`), `date_created`, `updated_at` (reszta pól zgodnie z PRD 5.2)
-- [ ] Dodaj model `Answer` (`id`, `task_id` FK, `answer_label`, `content_html`, `content_text`, `is_valid`, `display_order`) + `relationship` do `Task`
-- [ ] Dodaj model `TaskImage` (`task_id`, `image_id`, `context`, PK złożony) + `relationship`
-- [ ] Zdecyduj i wdróż: `@tailwindcss/typography` czy własna klasa `.task-content` w CSS
+- [x] Kopia `backend/tasks.db` poza repo (baza jest w `.gitignore` — to jedyna kopia banku)
+- [x] `database.py`: absolutna ścieżka do bazy (`Path(__file__)`) zamiast `./tasks.db`
+- [x] `requirements.txt`: dopisz `pytest`, `httpx`, `alembic`
+- [x] Usuń z katalogu głównego `package.json`, `package-lock.json` i `node_modules` (zaślepka po `npm install node.js`)
+- [x] Dodaj `VITE_API_URL` do `frontend/.env` i `frontend/.env.example`
+- [x] Zamień sztywne `http://127.0.0.1:8000` w `App.tsx` na `import.meta.env.VITE_API_URL`
+- [x] Popraw `get_session`: `db = SessionMaker()` przed `try`, zmień nazwę zmiennej `Session` → `db` (cieniuje import)
+- [x] Usuń `autoincrement=True` z `twin_task_id` w `models.py`
+- [x] Dodaj do `Task` w `models.py`: `external_id` (z `index=True` — w realnej bazie ma indeks `idx_tasks_external_id`), `date_created`, `updated_at` (reszta pól zgodnie z PRD 5.2)
+- [x] Dodaj model `Answer` (`id`, `task_id` FK, `answer_label`, `content_html`, `content_text`, `is_valid`, `display_order`) + `relationship` do `Task`
+- [x] Dodaj model `TaskImage` (`task_id`, `image_id`, `context`, PK złożony) + `relationship`
+- [x] Zdecyduj i wdróż: `@tailwindcss/typography` czy własna klasa `.task-content` w CSS
 
 ## Faza 1 — Bank z filtrami
 
 **Backend**
-- [ ] `GET /tasks`: parametry `Query` dla `class_level`, `difficulty: list[str]`, `scope: list[str]`, `topic: list[str]`, `task_type`, `source`, plus `limit`/`offset`
-- [ ] Zastosuj regułę „puste pole = zawsze pasuje" (FR-7/FR-7a) w WHERE dla `difficulty` i `scope`
-- [ ] Dodaj `response_model` (schematy Pydantic: `TaskOut`, `TaskListOut` z `items`+`total`)
+- [x] `GET /tasks`: parametry `Query` dla `class_level`, `difficulty: list[str]`, `scope: list[str]`, `topic: list[str]`, `task_type`, `source`, plus `limit`/`offset`
+- [x] Zastosuj regułę „puste pole = zawsze pasuje" (FR-7/FR-7a) w WHERE dla `difficulty` i `scope`
+- [x] Dodaj `response_model` (schematy Pydantic: `TaskOut`, `TaskListOut` z `items`+`total`)
 - [ ] `GET /tasks/facets` — zadeklaruj PRZED `GET /tasks/{id}`; przyjmuje `class_level`; zwraca wartości z licznikami (zadania z pustym `difficulty`/`scope` liczone w każdym koszyku — suma > liczba zadań jest zamierzona; tematy per klasa)
 - [ ] `GET /tasks/{id}` — zadanie + `answers` (z `is_valid`, jeden schemat `AnswerOut`)
 - [ ] `GET /images/{filename}`: nagłówek `ETag` / cache

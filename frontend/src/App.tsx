@@ -25,7 +25,7 @@ function App() {
 
     fetch(`${Path.task}?${params.toString()}`)
       .then((res) => res.json())
-      .then((data) => setTasks(data))
+      .then((data) => setTasks(data.items))
       .catch((err) => console.error("Błąd połączenia z API:", err));
   }, [classLevel, difficulty, taskType, scope, topic]);
 
