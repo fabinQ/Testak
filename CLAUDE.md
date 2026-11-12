@@ -2,7 +2,13 @@
 
 Teacher web app: compose A4 math tests from a task bank, draw by criteria, A/B groups, print/PDF via browser.
 Stack: FastAPI + SQLAlchemy + SQLite (`backend/`), React 19 + TS + Vite + Tailwind 4 (`frontend/`).
-Specs: `PRD-Testak.md` (FR-x ids), `Testak-Zadania-per-faza.md` (checklist). **Decisions below override the PRD.**
+Specs: `PRD-Testak.md` (FR-x ids), `Testak-Zadania-per-faza.md` (checklist), `DESIGN.md` (UI). **Decisions below override the PRD.**
+
+## Frontend / design
+- Before ANY frontend work read the relevant part of `DESIGN.md`: section 2 (tokens), 4 (shell + components) and the screen you are touching in section 5 (`grep -n "### 5\." DESIGN.md`). It is the source of truth for look, layout and per-device behaviour.
+- Colors, fonts, radii come only from the tokens in `DESIGN.md` 2 (Tailwind `@theme` in `frontend/src/index.css`); no hard-coded hex values in components.
+- If a task needs UI that `DESIGN.md` does not describe, or it conflicts with the PRD, stop and ask; after I decide, update `DESIGN.md` in the same change.
+- Logo: `frontend/public/favicon.svg` (mark), `frontend/public/logo.svg` (mark + wordmark).
 
 ## Language
 Talk to me in Polish. Code identifiers, commits, this file: English. UI strings and code comments: Polish.
@@ -23,12 +29,14 @@ Talk to me in Polish. Code identifiers, commits, this file: English. UI strings 
 - Phase 0 adds to `requirements.txt`: pytest, httpx, alembic.
 
 ## Hard rules
-- `backend/tasks.db` is the only copy of the bank and is gitignored. Bank tables (`tasks`, `answers`, `images`, `task_images`) are READ-ONLY: no INSERT/UPDATE/DELETE/ALTER, no `create_all` on them. Before Phase 0 ask me to confirm a backup of the file exists.
+- `backend/tasks.db` is the only copy of the bank and is gitignored. Bank tables (`tasks`, `answers`, `images`, `task_images`) may be written (INSERT/UPDATE/DELETE of rows) ONLY through the app's task-edit API endpoints (decided 2026-11-12, PRD FR-48: every task is editable). Still forbidden: ALTER / `create_all` / Alembic on bank tables, and any write from scripts, migrations or ad-hoc SQL. Tests that write must use a temporary copy or in-memory DB, never `tasks.db`.
+- Before the first write endpoint runs against `tasks.db`, ask me to confirm a fresh backup of the file. The open points in FR-48 (in-place vs. separate table, `updated_at`, deleting tasks used in saved tests, twins) are still "stop and ask".
 - DB path must be absolute (`Path(__file__)`), never `./tasks.db` (wrong cwd silently creates an empty DB).
 - Never read: `frontend/package-lock.json`, `node_modules/`, `*.db`, `__pycache__/`. Never dump BLOBs or `content_html` of many rows; use LIMIT / `length()`.
 - No new dependency without asking. Pre-approved: alembic, pytest, httpx, dompurify, @dnd-kit/*, vitest.
 
 ## Decisions
+- **Single user, no login** (confirmed 2026-11-12). The login screen in `DESIGN.md` 5.1 is a placeholder for later; do not build it.
 - **Twin tasks** (rows referenced by another row's `twin_task_id`) are never in the draw pool. With `group_count=2` they become group B content. GATE: before any twin/draw work, run a query checking whether `twin_task_id` is symmetric (A->B and B->A), report the result, and if symmetric ask me which side is the "original".
 - **Twin original (GATE resolved 2026-11-10):** `twin_task_id` is fully symmetric (2191 pairs). The lower `id` is the original; the higher-`id` side is hidden from `GET /tasks`, facets and draws (`is_original()` in `backend/main.py`) and activates only as group B content.
 - **Blank difficulty/scope** (NULL or "") matches every filter (FR-7/7a) — in draws, `GET /tasks` and facet counts. So count(łatwe) = łatwe + blank; counts don't sum to total (by design).

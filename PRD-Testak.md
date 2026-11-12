@@ -1,6 +1,11 @@
 # PRD — Testak: generator sprawdzianów (A4 / PDF)
 
-**Wersja:** 1.1 · **Data:** 2026-10-26 · **Status:** zaakceptowane — gotowe do implementacji (agent: Claude Code, zasady pracy w `CLAUDE.md`)
+**Wersja:** 1.2 · **Data:** 2026-11-12 · **Status:** zaakceptowane — gotowe do implementacji (agent: Claude Code, zasady pracy w `CLAUDE.md`)
+
+## Zmiany od v1.1 → v1.2
+- **Edycja zadań (FR-48):** każde zadanie z banku można edytować w Testaku (treść, odpowiedzi, metadane) oraz dodać nowe. Edytor treści zadań wychodzi z „Poza zakresem"; FR-47 staje się częścią FR-48. Bank przestaje być „tylko do odczytu": zapis wierszy jest dozwolony, ale wyłącznie przez endpointy edycji zadań; zmiany schematu, migracje i skrypty na tabelach banku pozostają zakazane (`CLAUDE.md`).
+- **Jeden użytkownik, bez logowania** — potwierdzone, bez zmian (sekcja 3, D-Login).
+- **Wygląd i układ ekranów:** `DESIGN.md` (styl „Tablica szkolna", ekrany, zachowanie na laptopie/tablecie/telefonie).
 
 ## Zmiany od v1.0 → v1.1
 - **Bliźniaki poza losowaniem (FR-5a):** zadanie wskazywane przez cudze `twin_task_id` nie wchodzi do puli kandydatów; przy 2 grupach trafia do grupy B. Bramka przed implementacją: sprawdzić, czy `twin_task_id` jest symetryczny.
@@ -86,9 +91,9 @@ flowchart LR
 - limity globalne losowania, wykluczanie zadań z wcześniejszych testów, podsumowanie punktów i czasu na żywo, numeracja stron (FR-10, FR-11, FR-16, FR-32)
 - zapis testu w bazie **+ eksport/import do pliku `.json`**
 
-🔜 **Później:** PDF generowany po stronie serwera (jeden klik, bez okna druku), więcej niż 2 grupy, inne przedmioty niż matematyka, historia użycia zadań, eksport DOCX, przetasowanie odpowiedzi też w trybie 1 grupy (utrudnianie ściągania)
+🔜 **Później:** edycja i dodawanie zadań w Testaku (FR-48), PDF generowany po stronie serwera (jeden klik, bez okna druku), więcej niż 2 grupy, inne przedmioty niż matematyka, historia użycia zadań, eksport DOCX, przetasowanie odpowiedzi też w trybie 1 grupy (utrudnianie ściągania)
 
-❌ **Poza zakresem:** rozwiązywanie testów online, automatyczne ocenianie, edytor treści zadań (`content_html`) i import nowych zadań w UI, konta wielu nauczycieli, generowanie zadań przez AI, edycja na telefonie
+❌ **Poza zakresem:** rozwiązywanie testów online, automatyczne ocenianie, masowy import zadań w UI, konta wielu nauczycieli, generowanie zadań przez AI, edycja na telefonie
 
 ## 5. Stan wyjściowy (as-is)
 
@@ -263,11 +268,12 @@ Dokładnie reguła, którą opisałeś:
 - **FR-44** — Inne przedmioty niż matematyka (dane + UI).
 - **FR-45** — Historia użycia zadań (kiedy i ile razy użyte).
 - **FR-46** — Przetasowanie odpowiedzi też w trybie 1 grupy (utrudnianie ściągania między sąsiadami).
-- **FR-47** — Uzupełnianie metadanych niekompletnych zadań (temat, poziom, trudność, punkty) wprost w Testaku — mały formularz ograniczony do pól taksonomii, bez edytora treści zadania. Najtańsza wersja: `PATCH /tasks/{id}` tylko na tych polach. Dobry kandydat na pierwsze rozszerzenie po MVP, bo wprost poprawia jakość puli do losowania.
+- **FR-47** — Uzupełnianie metadanych niekompletnych zadań (temat, poziom, trudność, punkty) wprost w Testaku — mały formularz ograniczony do pól taksonomii, bez edytora treści zadania. Najtańsza wersja: `PATCH /tasks/{id}` tylko na tych polach. Dobry kandydat na pierwsze rozszerzenie po MVP, bo wprost poprawia jakość puli do losowania. **Od v1.2 część FR-48** (może być jego pierwszym etapem).
+- **FR-48** — **Edycja i dodawanie zadań w Testaku.** Każde zadanie z banku ma akcję „Edytuj": metadane (klasa, dział, temat, typ, zakres, trudność, punkty, czas), treść (`content_html` — edytor z symbolami matematycznymi) i odpowiedzi (treść, kolejność, która jest poprawna). Ten sam formularz służy do dodania nowego zadania. `content_text` jest przeliczane z treści przy zapisie (wyszukiwanie FR-2). Układ ekranu: `DESIGN.md` 5.3–5.4. Do rozstrzygnięcia przed implementacją: (a) zapis w miejscu czy w osobnej tabeli zmian, (b) czy edycja nadpisuje `updated_at`, (c) usuwanie zadania użytego w zapisanym teście, (d) edycja zadania mającego bliźniaka, (e) biblioteka edytora i zapis wzorów. Warunek startu: świeża kopia `tasks.db`.
 
 ## 7. Model danych (propozycja)
 
-`tasks`, `answers`, `images`, `task_images` to bank — **tylko do odczytu** z poziomu Testaka, schemat jak w 5.2. Dochodzą dwie własne tabele:
+`tasks`, `answers`, `images`, `task_images` to bank — zapis wierszy **wyłącznie przez dedykowane endpointy edycji zadań** (FR-48), nigdy przez migracje ani skrypty; schemat bez zmian, jak w 5.2. Dochodzą dwie własne tabele:
 
 - **`tests`** — `id`, `title`, `subject`, `class_level`, `group_count` (1 lub 2, `CHECK`), `settings` (JSON: marginesy, czcionka, pola nagłówka), `created_at`, `updated_at`
 - **`test_items`** — `id`, `test_id` → `tests`, `position`, `task_id` → `tasks` (treść dla grupy A / jedyna treść przy 1 grupie), `group_b_task_id` → `tasks` (NULL, wypełnione tylko gdy jest bliźniak i `group_count = 2`), `workspace_mm`, `workspace_style`, `page_break_before`, `locked`, `answer_order_a` (JSON: lista `answer_id` w kolejności — tylko dla zamkniętych), `answer_order_b` (jw., tylko przy 2 grupach)
@@ -456,6 +462,7 @@ Czyli retrofit to: nowa tabela `users`, jedna migracja, nowy moduł auth, zamian
 *Pytanie kontrolne:* dlaczego kolejność odpowiedzi trzeba zapisać w `test_items`, a nie liczyć na bieżąco przy każdym wyświetleniu?
 
 ### Faza 7 — Rozszerzenia (backlog)
+- Edycja i dodawanie zadań (FR-48, w tym FR-47) — pierwsze w kolejce.
 - PDF z serwera (D1-B/C), więcej niż 2 grupy, inne przedmioty, historia użycia zadań.
 
 **Definition of Done każdej fazy:** działa + są testy tam, gdzie jest logika + (od Fazy 2) ręczny wydruk zgodny z podglądem.
@@ -470,7 +477,7 @@ Czyli retrofit to: nowa tabela `users`, jedna migracja, nowy moduł auth, zamian
 - **XSS** przez `dangerouslySetInnerHTML` → sanitizacja HTML (dotyczy też treści odpowiedzi z `answers`).
 - **Prawa do treści zadań** (pole `source`) — ważne, jeśli usługa ma kiedyś wyjść poza użytek własny.
 - **Symetria `twin_task_id`** — jeśli relacja jest symetryczna, wykluczenie bliźniaków z puli usunęłoby obie strony pary → sprawdzić na danych przed FR-5a.
-- **Jedyna kopia banku** (`tasks.db` w `.gitignore`, agent uruchamia migracje i skrypty) → kopia przed startem, tabele banku tylko do odczytu.
+- **Jedyna kopia banku** (`tasks.db` w `.gitignore`, agent uruchamia migracje i skrypty) → kopia przed startem; zapis do banku tylko przez endpointy edycji (FR-48), świeża kopia przed pierwszym zapisem; testy piszą wyłącznie do kopii tymczasowej.
 - **Rozrost zakresu** → trzymaj się MVP z sekcji 4.
 
 ## 13. Założenia do zweryfikowania przy kodowaniu (nieblokujące)
