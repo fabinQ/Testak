@@ -23,10 +23,10 @@ Plan wykonawczy do PRD v1.1 (zasady pracy agenta: `CLAUDE.md`). Każde zadanie t
 - [x] `GET /tasks`: parametry `Query` dla `class_level`, `difficulty: list[str]`, `scope: list[str]`, `topic: list[str]`, `task_type`, `source`, plus `limit`/`offset`
 - [x] Zastosuj regułę „puste pole = zawsze pasuje" (FR-7/FR-7a) w WHERE dla `difficulty` i `scope`
 - [x] Dodaj `response_model` (schematy Pydantic: `TaskOut`, `TaskListOut` z `items`+`total`)
-- [ ] `GET /tasks/facets` — zadeklaruj PRZED `GET /tasks/{id}`; przyjmuje `class_level`; zwraca wartości z licznikami (zadania z pustym `difficulty`/`scope` liczone w każdym koszyku — suma > liczba zadań jest zamierzona; tematy per klasa)
-- [ ] `GET /tasks/{id}` — zadanie + `answers` (z `is_valid`, jeden schemat `AnswerOut`)
-- [ ] `GET /images/{filename}`: nagłówek `ETag` / cache
-- [ ] Wyszukiwanie tekstowe `q` po `content_text`: własna funkcja casefold zarejestrowana w silniku (zdarzenie `connect`, `create_function`) — `LIKE`/`lower()` w SQLite nie rozumieją polskich znaków; escapowanie `%` i `_`; pomiar < 300 ms
+- [x] `GET /tasks/facets` — zadeklaruj PRZED `GET /tasks/{id}`; przyjmuje `class_level`; zwraca wartości z licznikami (zadania z pustym `difficulty`/`scope` liczone w każdym koszyku — suma > liczba zadań jest zamierzona; tematy per klasa)
+- [x] `GET /tasks/{id}` — zadanie + `answers` (z `is_valid`, jeden schemat `AnswerOut`)
+- [x] `GET /images/{filename}`: nagłówek `ETag` / cache
+- [x] Wyszukiwanie tekstowe `q` po `content_text`: własna funkcja casefold zarejestrowana w silniku (zdarzenie `connect`, `create_function`) — `LIKE`/`lower()` w SQLite nie rozumieją polskich znaków; escapowanie `%` i `_`; pomiar < 300 ms
 
 **Frontend**
 - [ ] Komponent panelu filtrów (multi-select dla `difficulty`, `scope`, `topic`)

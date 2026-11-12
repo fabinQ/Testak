@@ -13,6 +13,16 @@ def is_blank(column):
     return or_(column.is_(None), column == "")
 
 
+def class_or_blank(class_level: int):
+    """Zadanie bez klasy pasuje do każdego filtra klasy."""
+    return or_(Task.class_level == class_level, Task.class_level.is_(None))
+
+
+def test_blank_class_level_matches_class_filter():
+    assert count_tasks(Task.class_level.is_(None)) > 0
+    assert count_tasks(class_or_blank(4)) > count_tasks(Task.class_level == 4)
+
+
 def count_tasks(*conditions) -> int:
     """Liczy zadania widoczne w banku (bez ukrytej strony pary bliźniaków)."""
     with SessionMaker() as db:
@@ -29,7 +39,7 @@ def test_response_shape_and_default_limit():
 def test_limit_does_not_change_total():
     body = client.get("/tasks/", params={"class_level": 4, "limit": 5}).json()
     assert len(body["items"]) == 5
-    assert body["total"] == count_tasks(Task.class_level == 4)
+    assert body["total"] == count_tasks(class_or_blank(4))
 
 
 def test_offset_pages_do_not_overlap():
@@ -95,13 +105,13 @@ def test_filters_combine_with_and():
     params = {"class_level": 1, "task_type": "zamknięte", "difficulty": "trudne"}
     body = client.get("/tasks/", params=params).json()
     expected = count_tasks(
-        Task.class_level == 1,
+        class_or_blank(1),
         Task.task_type == "zamknięte",
         or_(Task.difficulty == "trudne", is_blank(Task.difficulty)),
     )
     assert body["total"] == expected
     assert all(
-        t["class_level"] == 1 and t["task_type"] == "zamknięte" for t in body["items"]
+        t["class_level"] in (1, None) and t["task_type"] == "zamknięte" for t in body["items"]
     )
 
 

@@ -41,3 +41,27 @@ class TaskListOut(BaseModel):
     items: list[TaskOut]
     # Liczba zadań pasujących do filtrów, przed limit/offset
     total: int
+
+
+class TaskDetailOut(TaskOut):
+    answers: list[AnswerOut]
+
+
+class FacetValue(BaseModel):
+    value: str
+    count: int
+
+
+class FacetsOut(BaseModel):
+    # Liczba zadań pasujących do wszystkich aktualnych filtrów (= total z GET /tasks)
+    total: int
+    # Liczba wszystkich zadań w banku, bez filtrów (bez ukrytych bliźniaków)
+    bank_total: int
+    # Liczniki: każdy filtr liczony przy zaznaczonych POZOSTAŁYCH filtrach.
+    # difficulty i scope: licznik zawiera też zadania z pustym polem (FR-3),
+    # więc suma liczników może przekraczać total — to zamierzone
+    difficulty: list[FacetValue]
+    scope: list[FacetValue]
+    topic: list[FacetValue]
+    task_type: list[FacetValue]
+    source: list[FacetValue]
