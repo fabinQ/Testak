@@ -32,10 +32,10 @@ Plan wykonawczy do PRD v1.1 (zasady pracy agenta: `CLAUDE.md`). Każde zadanie t
 - [ ] Komponent panelu filtrów (multi-select dla `difficulty`, `scope`, `topic`)
 - [ ] Pole wyszukiwania z debounce (np. 300 ms)
 - [ ] Stany `loading`/`error` + `AbortController` przy zmianie filtrów w trakcie trwającego fetcha
-- [ ] Wydzielenie wywołań API do `src/api.ts`
+- [x] Wydzielenie wywołań API do `src/api.ts`
 - [ ] Liczniki przy filtrach z `/tasks/facets` (FR-3)
-- [ ] Skonfiguruj Vitest (`npm test`)
-- [ ] Funkcja `prepareHtml()`: najpierw `image://` → `/images/`, potem DOMPurify (treść zadania i odpowiedzi) + test tej kolejności
+- [x] Skonfiguruj Vitest (`npm test`)
+- [x] Funkcja `prepareHtml()`: najpierw `image://` → `/images/`, potem DOMPurify (treść zadania i odpowiedzi) + test tej kolejności
 - [ ] Podgląd zadania zamkniętego z listą odpowiedzi (FR-4)
 
 ## Faza 2 — Kompozycja, podgląd A4 i undo

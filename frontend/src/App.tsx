@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
+import { fetchTasks } from "./api";
+import { prepareHtml } from "./prepareHtml";
 import type { Task } from "./types";
-import { Path } from "./types";
 
 function App() {
   const [tasks, setTasks] = useState<Task[]>([]);
@@ -15,16 +16,13 @@ function App() {
 
   // Pobieranie zadań z API z aktualnymi filtrami
   useEffect(() => {
-    const params = new URLSearchParams();
-
-    if (classLevel) params.append("class_level", classLevel);
-    if (difficulty) params.append("difficulty", difficulty);
-    if (taskType) params.append("task_type", taskType);
-    if (scope) params.append("scope", scope);
-    if (topic) params.append("topic", topic);
-
-    fetch(`${Path.task}?${params.toString()}`)
-      .then((res) => res.json())
+    fetchTasks({
+      class_level: classLevel ? Number(classLevel) : undefined,
+      difficulty: difficulty ? [difficulty] : undefined,
+      task_type: taskType || undefined,
+      scope: scope ? [scope] : undefined,
+      topic: topic ? [topic] : undefined,
+    })
       .then((data) => setTasks(data.items))
       .catch((err) => console.error("Błąd połączenia z API:", err));
   }, [classLevel, difficulty, taskType, scope, topic]);
@@ -50,7 +48,7 @@ function App() {
               <div
                 className="task-content"
                 dangerouslySetInnerHTML={{
-                  __html: rewriteImageUrls(task.content_html),
+                  __html: prepareHtml(task.content_html),
                 }}
               />
             </div>
@@ -69,12 +67,6 @@ function App() {
       </div>
     </div>
   );
-}
-
-// FUNKCJA NAPRAWIAJĄCA OBRAZKI
-function rewriteImageUrls(html: string) {
-  // Zamieniamy image://2647.svg na <VITE_API_URL>/images/2647.svg
-  return html.replace(/image:\/\//g, Path.images);
 }
 
 export default App;
