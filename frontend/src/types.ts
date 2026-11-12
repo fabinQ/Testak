@@ -48,6 +48,8 @@ export interface Facets {
   total: number;
   // Wszystkie zadania w banku, bez filtrów
   bank_total: number;
+  // Lista klas nie zależy od wybranej klasy (wartości jako tekst: "1".."4")
+  class_level: FacetValue[];
   difficulty: FacetValue[];
   scope: FacetValue[];
   topic: FacetValue[];

@@ -123,10 +123,12 @@ def facet_counts(db: Session, filters: TaskFilters, field: str) -> list[FacetVal
     zawężaniu — mogą mieć licznik 0.
     """
     column = getattr(Task, field)
-    blank_matches = field in ("difficulty", "scope")
+    blank_matches = field in ("class_level", "difficulty", "scope")
 
+    # Lista klas nie może zależeć od wybranej klasy — inaczej zostałaby jedna
+    value_scope = None if field == "class_level" else filters.class_level
     values = (
-        TaskFilters(class_level=filters.class_level)
+        TaskFilters(class_level=value_scope)
         .apply(db.query(column))
         .filter(~is_blank(column))
         .distinct()
@@ -142,7 +144,7 @@ def facet_counts(db: Session, filters: TaskFilters, field: str) -> list[FacetVal
     # FR-3: zadania z pustym polem liczą się w każdym koszyku
     blank = narrowed.filter(is_blank(column)).count() if blank_matches else 0
     return [
-        FacetValue(value=value, count=counts.get(value, 0) + blank)
+        FacetValue(value=str(value), count=counts.get(value, 0) + blank)
         for (value,) in values
     ]
 
@@ -159,7 +161,9 @@ def read_facets(
         bank_total=db.query(Task).filter(is_original()).count(),
         **{
             field: facet_counts(db, filters, field)
-            for field in ("difficulty", "scope", "topic", "task_type", "source")
+            for field in (
+                "class_level", "difficulty", "scope", "topic", "task_type", "source",
+            )
         },
     )
 

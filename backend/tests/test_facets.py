@@ -22,8 +22,20 @@ def test_facets_route_is_not_captured_by_task_id():
     res = client.get("/tasks/facets")
     assert res.status_code == 200
     assert set(res.json()) == {
-        "total", "bank_total", "difficulty", "scope", "topic", "task_type", "source",
+        "total", "bank_total", "class_level",
+        "difficulty", "scope", "topic", "task_type", "source",
     }
+
+
+def test_class_facet_lists_all_classes_even_when_one_is_selected():
+    base = client.get("/tasks/facets").json()["class_level"]
+    selected = client.get("/tasks/facets", params={"class_level": 2}).json()["class_level"]
+    assert [r["value"] for r in base] == ["1", "2", "3", "4"]
+    assert selected == base
+    # Licznik klasy = total listy po jej wybraniu (zadanie bez klasy też się liczy)
+    for row in base:
+        listed = client.get("/tasks/", params={"class_level": row["value"], "limit": 1})
+        assert listed.json()["total"] == row["count"]
 
 
 def test_total_follows_filters_and_bank_total_does_not():

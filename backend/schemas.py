@@ -60,6 +60,7 @@ class FacetsOut(BaseModel):
     # Liczniki: każdy filtr liczony przy zaznaczonych POZOSTAŁYCH filtrach.
     # difficulty i scope: licznik zawiera też zadania z pustym polem (FR-3),
     # więc suma liczników może przekraczać total — to zamierzone
+    class_level: list[FacetValue]
     difficulty: list[FacetValue]
     scope: list[FacetValue]
     topic: list[FacetValue]
