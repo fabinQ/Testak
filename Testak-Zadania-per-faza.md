@@ -29,14 +29,14 @@ Plan wykonawczy do PRD v1.1 (zasady pracy agenta: `CLAUDE.md`). Każde zadanie t
 - [x] Wyszukiwanie tekstowe `q` po `content_text`: własna funkcja casefold zarejestrowana w silniku (zdarzenie `connect`, `create_function`) — `LIKE`/`lower()` w SQLite nie rozumieją polskich znaków; escapowanie `%` i `_`; pomiar < 300 ms
 
 **Frontend**
-- [ ] Komponent panelu filtrów (multi-select dla `difficulty`, `scope`, `topic`)
-- [ ] Pole wyszukiwania z debounce (np. 300 ms)
-- [ ] Stany `loading`/`error` + `AbortController` przy zmianie filtrów w trakcie trwającego fetcha
+- [x] Komponent panelu filtrów (multi-select dla `difficulty`, `scope`, `topic`)
+- [x] Pole wyszukiwania z debounce (np. 300 ms)
+- [x] Stany `loading`/`error` + `AbortController` przy zmianie filtrów w trakcie trwającego fetcha
 - [x] Wydzielenie wywołań API do `src/api.ts`
-- [ ] Liczniki przy filtrach z `/tasks/facets` (FR-3)
+- [x] Liczniki przy filtrach z `/tasks/facets` (FR-3)
 - [x] Skonfiguruj Vitest (`npm test`)
 - [x] Funkcja `prepareHtml()`: najpierw `image://` → `/images/`, potem DOMPurify (treść zadania i odpowiedzi) + test tej kolejności
-- [ ] Podgląd zadania zamkniętego z listą odpowiedzi (FR-4)
+- [x] Podgląd zadania zamkniętego z listą odpowiedzi (FR-4)
 
 ## Faza 2 — Kompozycja, podgląd A4 i undo
 

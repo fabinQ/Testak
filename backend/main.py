@@ -6,7 +6,7 @@ from database import SessionMaker
 from models import Task, Image, Answer
 from schemas import FacetsOut, FacetValue, TaskDetailOut, TaskListOut
 from sqlalchemy import func, or_
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, selectinload
 
 
 app = FastAPI()
@@ -110,7 +110,14 @@ def read_tasks(
 
     total = query.count()
     # Stałe sortowanie — bez niego stronicowanie mogłoby gubić/powtarzać zadania
-    items = query.order_by(Task.id).offset(offset).limit(limit).all()
+    # selectinload: odpowiedzi całej strony jednym dodatkowym zapytaniem (bez N+1)
+    items = (
+        query.options(selectinload(Task.answers))
+        .order_by(Task.id)
+        .offset(offset)
+        .limit(limit)
+        .all()
+    )
     return TaskListOut(items=items, total=total)
 
 

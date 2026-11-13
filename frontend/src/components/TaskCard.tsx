@@ -1,6 +1,7 @@
 import { useMemo } from "react";
 import { prepareHtml } from "../prepareHtml";
-import type { Task } from "../types";
+import type { TaskDetail } from "../types";
+import { TaskAnswers } from "./TaskAnswers";
 
 function Chip({ children, title }: { children: string; title?: string }) {
   return (
@@ -45,7 +46,7 @@ function MetaChip({
 const withUnit = (value: number | null, unit: string) =>
   value === null ? null : `${value} ${unit}`;
 
-export function TaskCard({ task }: { task: Task }) {
+export function TaskCard({ task }: { task: TaskDetail }) {
   // Sanityzacja jest kosztowna — raz na treść, nie przy każdym renderze listy
   const html = useMemo(() => prepareHtml(task.content_html), [task.content_html]);
 
@@ -69,6 +70,7 @@ export function TaskCard({ task }: { task: Task }) {
         <MetaChip field="czas" value={withUnit(task.time_minutes, "min")} mono />
       </div>
       <div className="task-content" dangerouslySetInnerHTML={{ __html: html }} />
+      <TaskAnswers task={task} />
     </article>
   );
 }

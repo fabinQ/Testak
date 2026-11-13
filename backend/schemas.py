@@ -37,14 +37,16 @@ class TaskOut(BaseModel):
     twin_task_id: int | None
 
 
-class TaskListOut(BaseModel):
-    items: list[TaskOut]
-    # Liczba zadań pasujących do filtrów, przed limit/offset
-    total: int
-
-
 class TaskDetailOut(TaskOut):
     answers: list[AnswerOut]
+
+
+class TaskListOut(BaseModel):
+    # Lista zwraca zadania od razu z odpowiedziami — karta w Bazie zadań
+    # pokazuje je bez osobnego żądania na każde zadanie (FR-4)
+    items: list[TaskDetailOut]
+    # Liczba zadań pasujących do filtrów, przed limit/offset
+    total: int
 
 
 class FacetValue(BaseModel):

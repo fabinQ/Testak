@@ -36,6 +36,18 @@ def test_response_shape_and_default_limit():
     assert len(body["items"]) == 50
 
 
+def test_list_items_include_answers_in_display_order():
+    closed = client.get("/tasks/", params={"task_type": "zamknięte", "limit": 20}).json()
+    with_answers = [t for t in closed["items"] if t["answers"]]
+    assert with_answers
+    for task in with_answers:
+        orders = [a["display_order"] for a in task["answers"]]
+        assert orders == sorted(orders)
+        assert all(a["task_id"] == task["id"] for a in task["answers"])
+        assert [a["answer_label"] for a in task["answers"]] == ["A", "B", "C", "D"]
+        assert sum(a["is_valid"] for a in task["answers"]) == 1
+
+
 def test_limit_does_not_change_total():
     body = client.get("/tasks/", params={"class_level": 4, "limit": 5}).json()
     assert len(body["items"]) == 5

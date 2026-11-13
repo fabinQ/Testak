@@ -33,7 +33,8 @@ export interface TaskDetail extends Task {
 }
 
 export interface TaskList {
-  items: Task[];
+  // Zadania od razu z odpowiedziami (karta nie robi osobnych żądań)
+  items: TaskDetail[];
   // Liczba zadań pasujących do filtrów, przed limit/offset
   total: number;
 }
