@@ -1,6 +1,8 @@
 import { useState } from "react";
 import "./PersonalInfo.css"
 
+// Plik z pilotażu Reacta (z main), nieużywany przez aplikację — wyłączenie reguły zamiast przebudowy
+// eslint-disable-next-line react-refresh/only-export-components
 export const initialPeople = [
   { firstName: "John", tel: "123-456-7890", city: "New York" },
   { firstName: "Jane", tel: "987-654-3210", city: "Los Angeles" },
