@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 126 32" role="img" aria-label="Testak">
+  <rect x="1" y="1" width="30" height="30" rx="6" fill="#F2B544"/>
+  <path d="M7.5 17l4.5 5.5L18 9.5h7" fill="none" stroke="#17231F" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="42" y="23.5" font-family="'Space Grotesk', system-ui, sans-serif" font-size="23" font-weight="700" letter-spacing="-0.5" fill="#17231F">testak</text>
+</svg>

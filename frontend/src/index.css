@@ -1,72 +1,150 @@
-/* @import "tailwindcss"; */
+@import "tailwindcss";
 
-:root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
+/* Czcionki lokalne (aplikacja działa bez internetu). Pliki zmienne: jeden plik = wszystkie grubości.
+   Podział na latin / latin-ext: polskie znaki są w latin-ext. */
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("/fonts/inter-latin-ext.woff2") format("woff2");
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF,
+    U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020,
+    U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("/fonts/inter-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA,
+    U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193,
+    U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: "Space Grotesk";
+  font-style: normal;
+  font-weight: 300 700;
+  font-display: swap;
+  src: url("/fonts/space-grotesk-latin-ext.woff2") format("woff2");
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF,
+    U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020,
+    U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: "Space Grotesk";
+  font-style: normal;
+  font-weight: 300 700;
+  font-display: swap;
+  src: url("/fonts/space-grotesk-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA,
+    U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193,
+    U+2212, U+2215, U+FEFF, U+FFFD;
+}
 
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
- 
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-* {
-  box-sizing: border-box;
-}
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
+/* Tokeny z DESIGN.md sekcja 2 — jedyne źródło kolorów, czcionek i promieni.
+   W komponentach używać klas (bg-board, text-ink-muted...), nigdy wartości szesnastkowych. */
+@theme {
+  --color-board: #1e3a32;
+  --color-board-raised: #2d5246;
+  --color-chalk: #eef4f0;
+  --color-chalk-muted: #b5ccc2;
+  --color-amber: #f2b544;
+  --color-amber-hover: #e5a52e;
+  --color-amber-text: #f7c866;
+  --color-bg: #f2f4f0;
+  --color-surface: #ffffff;
+  --color-ink: #17231f;
+  --color-ink-muted: #55625c;
+  --color-line: #d5dcd2;
+  --color-line-strong: #b9c6bd;
+  --color-link: #1f6b55;
+  --color-link-hover: #154b3c;
+  --color-danger: #a32a1c;
+  --color-danger-bg: #fbedea;
+  --color-warn-ink: #6b4700;
+  --color-warn-bg: #fff4d6;
+
+  --font-sans: "Inter", system-ui, sans-serif;
+  --font-display: "Space Grotesk", system-ui, sans-serif;
+  --font-mono: ui-monospace, "Cascadia Mono", Consolas, monospace;
+  --font-task: Cambria, "Times New Roman", serif;
+
+  --radius-chip: 4px;
+  --radius-control: 6px;
+  --radius-card: 8px;
 }
 
 body {
   margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
+  background: var(--color-bg);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  font-size: 15px;
+  line-height: 1.5;
 }
 
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
+/* Fokus klawiatury: zawsze widoczny (DESIGN 2.3) */
+:focus-visible {
+  outline: 2px solid var(--color-link);
+  outline-offset: 2px;
+}
+.on-board :focus-visible {
+  outline-color: var(--color-amber-text);
 }
 
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
-  cursor: pointer;
-  transition: border-color 0.25s;
-}
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0s !important;
+    transition-duration: 0s !important;
+  }
 }
 
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
+/* Treść zadań/odpowiedzi z banku (HTML z dangerouslySetInnerHTML, zawsze po prepareHtml).
+   Własna klasa zamiast @tailwindcss/typography: pełna kontrola nad wyglądem na A4 i w druku. */
+.task-content {
+  color: var(--color-ink);
+  font-family: var(--font-task);
+  font-size: 17px;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+.task-content p {
+  margin: 0 0 0.5em;
+}
+.task-content p:last-child {
+  margin-bottom: 0;
+}
+.task-content ul,
+.task-content ol {
+  margin: 0.25em 0 0.5em;
+  padding-left: 1.5em;
+}
+.task-content ul {
+  list-style: disc;
+}
+.task-content ol {
+  list-style: decimal;
+}
+.task-content img {
+  display: inline-block;
+  max-width: 100%;
+  height: auto;
+  vertical-align: middle;
+}
+.task-content table {
+  border-collapse: collapse;
+  margin: 0.5em 0;
+}
+.task-content td,
+.task-content th {
+  border: 1px solid var(--color-line-strong);
+  padding: 0.15em 0.4em;
+}
+.task-content sub,
+.task-content sup {
+  line-height: 0;
 }
