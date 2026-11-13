@@ -104,7 +104,7 @@ Czcionki Space Grotesk i Inter: pliki `woff2` w `frontend/public/fonts/` + `@fon
 | **Akcje karty** (edytuj / usuń / inne) | w prawym górnym rogu karty; ikony 44 × 44 z `aria-label`. Pojawiają się przy `:hover` i `:focus-within`. Na ekranach dotykowych (`@media (hover: none)`) **widoczne zawsze**. |
 | **Chip metadanych** | obrys `line-strong`, r 4, tekst 12,5. Kolejność: klasa · dział/temat · typ · zakres · trudność · punkty · czas. Puste pole → chip „brak" w kolorze `warn`. |
 | **Pole formularza** | etykieta nad polem (13/500), wys. 44, ramka `line`, fokus `link`. Błąd: ramka `danger` + komunikat pod polem. Pola opcjonalne mają dopisek „(opcjonalne)", nie gwiazdki przy wymaganych. |
-| **Filtr wielokrotny** | przycisk z nazwą i licznikiem wybranych („Dział · 2"), po kliknięciu lista z polami wyboru i licznikami zadań (FR-3). Wybrane filtry jako chipy z „×" pod paskiem, „Wyczyść filtry". |
+| **Filtr wielokrotny** | przycisk z nazwą i licznikiem wybranych („Dział · 2"), po kliknięciu lista z polami wyboru i licznikami zadań (FR-3). Wybrane filtry jako chipy z „×" pod paskiem, „Wyczyść filtry". Filtr jednokrotnego wyboru (Klasa, Typ, Źródło) pokazuje na przycisku wybraną wartość („Klasa · klasa 2"), nie licznik. Lista przy prawej krawędzi okna rozwija się do lewej. |
 | **Wyszukiwarka** | pole z ikoną lupy, szukanie po 300 ms od ostatniego znaku (FR-2). |
 | **Przełącznik segmentowy** | 2–3 opcje (np. liczba grup 1/2, Grupa A/B, Ręcznie/Losuj). |
 | **Kroki kreatora** | 4 kroki w rzędzie: numer w kwadracie + nazwa. Aktywny: `board` z białym tekstem; ukończony: znak ✓ w kolorze `link`, klikalny; przyszły: wyszarzony, nieklikalny. Na telefonie: „Krok 2 z 4 · Dodawanie zadań". |
@@ -138,6 +138,7 @@ Nie budujemy teraz. Gdy przyjdą konta: wyśrodkowana karta 400 px na tle `board
 - Lista kart zadań, 20 na stronę, paginacja na dole. Karta: chipy, treść, dla zamkniętych odpowiedzi A–D (poprawna oznaczona ✓ i słowem „poprawna" — to widok nauczyciela), rozwijana „Odpowiedź" dla otwartych.
 - Akcje karty: **Edytuj**, **Usuń**. Zadania z brakami w metadanych mają chip „brak" — kliknięcie prowadzi do edycji.
 - Zadania-bliźniaki (strona B pary) nie są na liście; w edycji oryginału jest link „Wersja dla grupy B".
+- **Stan po fazie 1 (ustalone 2026-11-13):** bez routera — Baza zadań jest jedynym ekranem w szkielecie; pozostałe pozycje menu są widoczne jako nieaktywne z dopiskiem „wkrótce". Akcje **Nowe zadanie**, **Edytuj**, **Usuń** dojdą razem z edycją zadań (FR-48). Dział = kolumna `topic` banku.
 
 ### 5.4 Nowe zadanie / edycja zadania (`/zadania/nowe`, `/zadania/:id/edycja`)
 

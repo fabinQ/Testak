@@ -35,7 +35,7 @@ export function buildQuery(
   return query ? `?${query}` : "";
 }
 
-async function getJson<T>(path: string, signal?: AbortSignal): Promise<T> {
+export async function getJson<T>(path: string, signal?: AbortSignal): Promise<T> {
   const res = await fetch(`${API_URL}${path}`, { signal });
   if (!res.ok) {
     throw new ApiError(res.status, `Błąd API ${res.status} (${path})`);
@@ -43,19 +43,29 @@ async function getJson<T>(path: string, signal?: AbortSignal): Promise<T> {
   return (await res.json()) as T;
 }
 
+// Ścieżki jako zwykłe teksty: ten sam tekst = to samo żądanie,
+// więc hook useRequest może ich używać jako klucza
+export function tasksPath(filters: TaskFilters = {}, page: Page = {}): string {
+  return `/tasks/${buildQuery({ ...filters, ...page })}`;
+}
+
+export function facetsPath(filters: TaskFilters = {}): string {
+  return `/tasks/facets${buildQuery({ ...filters })}`;
+}
+
 export function fetchTasks(
   filters: TaskFilters = {},
   page: Page = {},
   signal?: AbortSignal,
 ): Promise<TaskList> {
-  return getJson(`/tasks/${buildQuery({ ...filters, ...page })}`, signal);
+  return getJson(tasksPath(filters, page), signal);
 }
 
 export function fetchFacets(
   filters: TaskFilters = {},
   signal?: AbortSignal,
 ): Promise<Facets> {
-  return getJson(`/tasks/facets${buildQuery({ ...filters })}`, signal);
+  return getJson(facetsPath(filters), signal);
 }
 
 export function fetchTask(id: number, signal?: AbortSignal): Promise<TaskDetail> {
